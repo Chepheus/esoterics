@@ -1,32 +1,35 @@
-const express = require('express');
-const app = express();
+const fse = require('fs-extra');
+const requestPromises = require('./request-promises');
+const content = require('./content');
 
-const got = require('got');
-const htmlParser = require('node-html-parser');
-const iconv = require('iconv-lite');
-
-const port = 8080;
+const contentDir = __dirname + '/content';
 const url = 'https://www.astrology.com/horoscope/daily/';
+const pages = [
+    'aries.html',
+    'taurus.html',
+    'gemini.html',
+    'cancer.html',
+    'leo.html',
+    'virgo.html',
+    'libra.html',
+    'scorpio.html',
+    'sagittarius.html',
+    'capricorn.html',
+    'aquarius.html',
+    'pisces.html'
+];
 
-app.get('/', (req, res) => {
+let promisses = requestPromises.get(url, pages);
+const template = fse.readFileSync(__dirname + '/template.html', 'utf8')
 
-    got(url + 'sagittarius.html').then(response => {
-        const root = htmlParser.parse(response.body);
-        const commonText = root.querySelector('div.grid-md-c-s2').textContent;
-        const loveText = root.querySelector('#content-love').textContent;
-        const workText = root.querySelector('#content-work').textContent;
-
-        const body = commonText + "<br>" + loveText + "<br>" + workText;
-
-        res.writeHead(200, {"Content-Type": "text/html; charset=utf-8"});
-        res.write(body, "utf-8");
-        res.end();
-    }).catch(err => {
-        console.log(err);
-        res.end(err.toString());
+fse.ensureDirSync(contentDir);
+Promise.all(promisses).then(results => {
+    results.forEach((result) => {
+        content.create(fse, result, template, contentDir);
+        console.log(result.page + ' page created!')
     });
-});
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log('END');
+}).catch(err => {
+    console.log(err);
 });
