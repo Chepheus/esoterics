@@ -1,8 +1,10 @@
 const fse = require('fs-extra');
 const requestPromises = require('./lib/request-promises');
 const content = require('./lib/content');
+const CORE_DIR = __dirname + '/../..';
 
-const contentDir = __dirname + '/content';
+const contentDir = CORE_DIR + '/horoscope'; // PROD PATH
+// const contentDir = __dirname + '/horoscope';
 const url = 'https://www.astrology.com/horoscope/daily/';
 const pages = [
     'aries.html',
@@ -22,7 +24,6 @@ const pages = [
 let promisses = requestPromises.get(url, pages);
 const template = fse.readFileSync(__dirname + '/template.html', 'utf8')
 
-fse.ensureDirSync(contentDir);
 Promise.all(promisses).then(results => {
     results.forEach((result) => {
         content.create(fse, result, template, contentDir);

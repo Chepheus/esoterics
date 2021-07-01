@@ -1,4 +1,5 @@
 const htmlParser = require('node-html-parser');
+const date = require('date-and-time');
 
 module.exports.getBody = function (response)
 {
@@ -14,6 +15,7 @@ module.exports.getBody = function (response)
         'loveText': loveText.replace(/[\n\t\r]/g,""),
         'workText': workText.replace(/[\n\t\r]/g,""),
         'datingText': datingText.replace(/[\n\t\r]/g,""),
-        'bonusText': bonusText.replace(/[\n\t\r]/g,"")
+        'bonusText': bonusText.replace(/[\n\t\r]/g,""),
+        'dateNow': date.format(new Date(), 'MMMM D, YYYY')
     };
 }
