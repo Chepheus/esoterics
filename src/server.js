@@ -1,6 +1,6 @@
 const fse = require('fs-extra');
-const requestPromises = require('./request-promises');
-const content = require('./content');
+const requestPromises = require('./lib/request-promises');
+const content = require('./lib/content');
 
 const contentDir = __dirname + '/content';
 const url = 'https://www.astrology.com/horoscope/daily/';
