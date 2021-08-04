@@ -3,7 +3,7 @@ const requestPromises = require('./lib/request-promises');
 const content = require('./lib/content');
 const CORE_DIR = __dirname + '/../..';
 
-const contentDir = CORE_DIR + '/horoscope'; // PROD PATH
+// const contentDir1 = CORE_DIR + '/horoscope'; // PROD PATH
 // const contentDir = __dirname + '/horoscope';
 const url = 'https://www.astrology.com/horoscope/daily/';
 const pages = [
@@ -22,11 +22,24 @@ const pages = [
 ];
 
 let promisses = requestPromises.get(url, pages);
-const template = fse.readFileSync(__dirname + '/template.html', 'utf8')
+// const template1 = fse.readFileSync(__dirname + '/template1.html', 'utf8');
+// const template2 = fse.readFileSync(__dirname + '/template2.html', 'utf8');
+
+const data = [
+    {
+        // 'contentDir': CORE_DIR + '/horoscope',
+        'contentDir': CORE_DIR + '/horoscope',
+        'template': fse.readFileSync(__dirname + '/template1.html', 'utf8')
+    },
+    {
+        'contentDir': CORE_DIR + '/weeklysubscription/horoscope',
+        'template': fse.readFileSync(__dirname + '/template2.html', 'utf8')
+    }
+];
 
 Promise.all(promisses).then(results => {
     results.forEach((result) => {
-        content.create(fse, result, template, contentDir);
+        content.create(fse, result, data);
         console.log(result.page + ' page created!')
     });
 
